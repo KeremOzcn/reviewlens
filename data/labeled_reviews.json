@@ -1,0 +1,491 @@
+{
+  "metadata": {
+    "description": "Turkish product review dataset with aspect-based sentiment labels",
+    "language": "Turkish",
+    "total_reviews": 40,
+    "aspects": ["quality", "shipping", "price", "durability", "customer_service", "usability"],
+    "label_range": [-1.0, 1.0]
+  },
+  "reviews": [
+    {
+      "text": "Ses kalitesi gerçekten muhteşem, bas sesleri çok dolu ve zengin.",
+      "overall_sentiment": 0.9,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Kargo 3 haftada geldi ve paket ciddi şekilde ezilmişti. Satıcı umursamadı.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": 0.2,
+        "shipping": -0.9,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": -0.7,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Fiyatına göre ses kalitesi iyi sayılır, memnunum genel olarak.",
+      "overall_sentiment": 0.65,
+      "aspects": {
+        "quality": 0.6,
+        "shipping": 0.0,
+        "price": 0.7,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Gürültü engelleme özelliği ofiste çok işe yarıyor, toplantılarda mükemmel.",
+      "overall_sentiment": 0.85,
+      "aspects": {
+        "quality": 0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.9
+      }
+    },
+    {
+      "text": "Batarya ömrü berbat! Sadece 3 saatte bitiyor, rakiplerinden çok kötü.",
+      "overall_sentiment": -0.85,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": -0.9,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Termal yönetim berbat! Video işlerken diz yakayor, fan sesi de inanılmaz gürültülü.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": -0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.7
+      }
+    },
+    {
+      "text": "Fan sesi yüksek yükte çok gürültülü, kütüphanede kullanamıyorum neredeyse.",
+      "overall_sentiment": -0.7,
+      "aspects": {
+        "quality": -0.7,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.8
+      }
+    },
+    {
+      "text": "Performansı inanılmaz, ağır programlar bile kasılmadan açılıyor. Çok memnunum.",
+      "overall_sentiment": 0.9,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.9
+      }
+    },
+    {
+      "text": "Tasarımı gerçekten çarpıcı, her ortama uyuyor. Çok şık görünüyor.",
+      "overall_sentiment": 0.8,
+      "aspects": {
+        "quality": 0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.7
+      }
+    },
+    {
+      "text": "Uygulama berbat! Sürekli çöküyor, veri senkronizasyonu çalışmıyor.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": -0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": -0.6,
+        "usability": -0.9
+      }
+    },
+    {
+      "text": "Batarya ömrü harika, 7 günde bir şarj ediyorum. Çok pratik.",
+      "overall_sentiment": 0.85,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.9,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Su geçirmezlik çalışıyor, yüzerken kullandım hiç sorun çıkmadı.",
+      "overall_sentiment": 0.8,
+      "aspects": {
+        "quality": 0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.9,
+        "customer_service": 0.0,
+        "usability": 0.7
+      }
+    },
+    {
+      "text": "Bant kalitesi düşük, 1 ayda değiştirmem gerekti. Deri tahrişine yol açtı.",
+      "overall_sentiment": -0.75,
+      "aspects": {
+        "quality": -0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": -0.7,
+        "customer_service": 0.0,
+        "usability": -0.6
+      }
+    },
+    {
+      "text": "Evi harika temizliyor, hayatımı kurtardı, her gün çalıştırıyorum.",
+      "overall_sentiment": 0.9,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Haritalama yeteneği kusursuz, hiçbir odayı atlamıyor.",
+      "overall_sentiment": 0.85,
+      "aspects": {
+        "quality": 0.85,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.85
+      }
+    },
+    {
+      "text": "Mobil uygulaması çok pratik, dışarıdan kontrol ediyorum kolayca.",
+      "overall_sentiment": 0.8,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.9
+      }
+    },
+    {
+      "text": "Emiş gücü gerçekten muazzam, halılardaki tozları bile çekiyor.",
+      "overall_sentiment": 0.88,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Fiyatına göre inanılmaz yetenekli bir cihaz, tereddüt etmeden alın.",
+      "overall_sentiment": 0.88,
+      "aspects": {
+        "quality": 0.8,
+        "shipping": 0.0,
+        "price": 0.9,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Şarj istasyonunu bulmakta bazen zorlanıyor ama büyük bir sorun değil.",
+      "overall_sentiment": 0.5,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.4
+      }
+    },
+    {
+      "text": "Paspas özelliği halıları biraz ıslatıyor, çok başarılı bulmadım.",
+      "overall_sentiment": 0.4,
+      "aspects": {
+        "quality": 0.4,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.3
+      }
+    },
+    {
+      "text": "Müşteri hizmetlerinden çok memnun kaldım, kurulumda yardımcı oldular.",
+      "overall_sentiment": 0.85,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.9,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Ekran çok yavaş, sayfa geçişleri tam bir eziyet.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": -0.8,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.9
+      }
+    },
+    {
+      "text": "Şarjı 2 gün zor dayanıyor, kitap okurken yarı yolda kaldım defalarca.",
+      "overall_sentiment": -0.75,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": -0.8,
+        "customer_service": 0.0,
+        "usability": -0.7
+      }
+    },
+    {
+      "text": "Arkadan aydınlatma gözlerimi çok yordu, homojen ışık dağılımı yok.",
+      "overall_sentiment": -0.7,
+      "aspects": {
+        "quality": -0.7,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.7
+      }
+    },
+    {
+      "text": "Mağaza içerikleri yetersiz, Türkçe kitap çok sınırlı sayıda.",
+      "overall_sentiment": -0.6,
+      "aspects": {
+        "quality": -0.6,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": -0.5,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Beklentimin çok altında, aldığıma çok pişman oldum iade edeceğim.",
+      "overall_sentiment": -0.85,
+      "aspects": {
+        "quality": -0.85,
+        "shipping": 0.0,
+        "price": -0.7,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Çerçevesi gereksiz kalın, elde tutması bir süre sonra ağır geldi.",
+      "overall_sentiment": -0.6,
+      "aspects": {
+        "quality": -0.6,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.6
+      }
+    },
+    {
+      "text": "Müşteri hizmetlerine ulaşılamıyor, kimse cevap vermiyor maillere.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": -0.95,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Gövde kalitesi sağlam, çizilmiyor ama yazılımı çöp.",
+      "overall_sentiment": -0.4,
+      "aspects": {
+        "quality": 0.2,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.8,
+        "customer_service": 0.0,
+        "usability": -0.9
+      }
+    },
+    {
+      "text": "Fiyatını kesinlikle hak etmiyor, ucuz bir tablet almak çok daha mantıklı.",
+      "overall_sentiment": -0.8,
+      "aspects": {
+        "quality": -0.7,
+        "shipping": 0.0,
+        "price": -0.9,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Soğutma performansı gayet iyi, en ağır oyunlarda dahi hiç ses çıkarmıyor.",
+      "overall_sentiment": 0.85,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.8,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Controller ergonomisi gerçekten harika, titreşim özellikleri muazzam çalışıyor.",
+      "overall_sentiment": 0.9,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.95
+      }
+    },
+    {
+      "text": "Depolama alanı çok yetersiz! Sadece 3-4 güncel oyun kurunca doldu.",
+      "overall_sentiment": -0.75,
+      "aspects": {
+        "quality": -0.7,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.8
+      }
+    },
+    {
+      "text": "Oyun fiyatlarının aşırı pahalılığı yüzünden kutuyu açmaya korkar oldum.",
+      "overall_sentiment": -0.7,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": -0.95,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Tasarımı çok şık ve fütüristik ama TV ünitesine sığmakta çok zorlanıyor.",
+      "overall_sentiment": 0.3,
+      "aspects": {
+        "quality": 0.7,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": -0.4
+      }
+    },
+    {
+      "text": "Geriye dönük oyunları çalıştırabilmesi çok büyük bir artı benim için.",
+      "overall_sentiment": 0.8,
+      "aspects": {
+        "quality": 0.0,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.9
+      }
+    },
+    {
+      "text": "Yükleme süreleri yok denecek kadar az, SSD hızı inanılmaz akıcı hissettiriyor.",
+      "overall_sentiment": 0.9,
+      "aspects": {
+        "quality": 0.9,
+        "shipping": 0.0,
+        "price": 0.0,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.9
+      }
+    },
+    {
+      "text": "Fiyat performans açısından piyasanın en iyisi, kesinlikle tavsiye ederim.",
+      "overall_sentiment": 0.88,
+      "aspects": {
+        "quality": 0.85,
+        "shipping": 0.0,
+        "price": 0.95,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.8
+      }
+    },
+    {
+      "text": "Fiyat performans anlamında kötü diyemem elbet, ama kalite olarak ucuz çin malı gibi duruyor.",
+      "overall_sentiment": 0.15,
+      "aspects": {
+        "quality": -0.5,
+        "shipping": 0.0,
+        "price": 0.7,
+        "durability": 0.0,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    },
+    {
+      "text": "Hızlı kargo ama ürün kalitesi hayal kırıklığı oldu, sağlam değil.",
+      "overall_sentiment": -0.3,
+      "aspects": {
+        "quality": -0.6,
+        "shipping": 0.8,
+        "price": 0.0,
+        "durability": -0.5,
+        "customer_service": 0.0,
+        "usability": 0.0
+      }
+    }
+  ]
+}

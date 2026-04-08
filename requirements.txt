@@ -1,0 +1,39 @@
+# Core
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pydantic==2.7.1
+python-multipart==0.0.9
+
+# ML / NLP
+torch==2.3.0
+transformers==4.41.0
+sentence-transformers==3.0.0
+datasets==2.19.0
+tokenizers==0.19.1
+accelerate==0.30.0
+
+# Clustering & Feature Extraction
+# hdbscan standalone not needed — using sklearn.cluster.HDBSCAN (sklearn >= 1.3)
+scikit-learn==1.4.2
+numpy==1.26.4
+
+# Text preprocessing
+beautifulsoup4==4.12.3
+contractions==0.1.73
+nltk==3.8.1
+
+# Demo UI
+gradio==4.31.0
+
+# Evaluation & Logging
+matplotlib==3.9.0
+seaborn==0.13.2
+tqdm==4.66.4
+
+# Config
+python-dotenv==1.0.1
+
+# Testing
+httpx==0.27.0
+pytest==8.2.0
+pytest-asyncio==0.23.6

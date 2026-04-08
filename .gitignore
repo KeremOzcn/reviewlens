@@ -1,0 +1,42 @@
+# Virtual environments
+venv/
+venv311/
+.venv/
+env/
+
+# Model weights (too large for GitHub - download via HuggingFace)
+models/finetuned_bert/model.safetensors
+models/tfidf_results/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Environment variables (contains secrets)
+.env
+
+# Training data (generated)
+training/data/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# PDF (regenerate from REPORT.md)
+ReviewLens_Report.pdf
