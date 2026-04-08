@@ -38,5 +38,5 @@ Thumbs.db
 .idea/
 *.swp
 
-# PDF (regenerate from REPORT.md)
-ReviewLens_Report.pdf
+# Build scripts
+generate_pdf.py

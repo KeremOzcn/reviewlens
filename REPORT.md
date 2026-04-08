@@ -6,7 +6,7 @@
 **Date:** April 2026
 
 **Code Repository:** https://github.com/KeremOzcn/reviewlens  
-**Video Presentation:** *(link will be added after recording)*
+**Video Presentation:** https://youtu.be/XgDiJUnKe2Y
 
 ---
 
