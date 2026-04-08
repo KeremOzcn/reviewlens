@@ -356,6 +356,8 @@ GET /health
 
 ## Code Repository
 
+**Repository:** https://github.com/KeremOzcn/reviewlens
+
 **Structure:**
 ```
 reviewlens/
