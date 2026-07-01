@@ -46,3 +46,6 @@ node_modules/
 extension/e2e/test-results/
 extension/e2e/playwright-report/
 extension/e2e/.cache/
+
+# Packaged Chrome Web Store upload zip (regenerate via scripts/package_extension.sh)
+dist/

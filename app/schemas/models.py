@@ -45,12 +45,18 @@ class SummaryLabel(str, Enum):
 # ---------------------------------------------------------------------------
 
 
+_MAX_REVIEWS_PER_REQUEST = 500
+_MAX_REVIEW_CHARS = 5000
+_MAX_PRODUCTS_PER_BATCH = 20
+
+
 class AnalyzeRequest(BaseModel):
     """Payload for POST /analyze."""
 
     reviews: List[str] = Field(
         ...,
         min_length=1,
+        max_length=_MAX_REVIEWS_PER_REQUEST,
         description="List of review texts to analyse.",
         examples=[["Great battery life!", "Shipping was slow but product is good."]],
     )
@@ -71,7 +77,7 @@ class AnalyzeRequest(BaseModel):
     @field_validator("reviews")
     @classmethod
     def reviews_not_empty(cls, v: List[str]) -> List[str]:
-        filtered = [r.strip() for r in v if r and r.strip()]
+        filtered = [r.strip()[:_MAX_REVIEW_CHARS] for r in v if r and r.strip()]
         if not filtered:
             raise ValueError("At least one non-empty review is required.")
         return filtered
@@ -82,6 +88,7 @@ class BatchAnalyzeRequest(BaseModel):
 
     products: List[AnalyzeRequest] = Field(
         ...,
+        max_length=_MAX_PRODUCTS_PER_BATCH,
         min_length=1,
         description="List of products, each with their reviews.",
     )

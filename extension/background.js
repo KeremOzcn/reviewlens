@@ -1,6 +1,18 @@
 "use strict";
 
+// REQUIRED BEFORE STORE SUBMISSION: point this at the deployed HTTPS backend
+// (and update manifest.json's host_permissions to match — localhost only
+// works for local development, not for real installs).
 const API_BASE = "http://127.0.0.1:8001";
+
+// Must match the backend's EXTENSION_API_KEY. This is bundled into the
+// public extension source and is NOT a strong secret — anyone can unpack
+// the extension and read it. It only raises the bar from "zero effort" to
+// "read the source", stopping casual scraping and other installed
+// extensions from riding on this backend for free. Real per-user
+// authentication/billing is a separate, not-yet-built system.
+const EXTENSION_API_KEY = "REPLACE_WITH_BACKEND_EXTENSION_API_KEY";
+
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 // ── Cache helpers ────────────────────────────────────────────────────────────
@@ -89,7 +101,10 @@ async function handleAnalyzePage(tabId, tabUrl) {
 
   const response = await fetch(`${API_BASE}/api/v1/analyze`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": EXTENSION_API_KEY,
+    },
     body: JSON.stringify({
       product_name: scrapeResult.productName,
       reviews: scrapeResult.reviews,

@@ -9,6 +9,10 @@ Environment variables (see .env.example):
     EMBEDDING_MODEL_NAME — sentence-transformers model for clustering
     NEGATIVE_THRESHOLD   — overall sentiment threshold for negative filter
     LOG_LEVEL            — logging level (default: INFO)
+    EXTENSION_API_KEY    — shared secret the extension sends as X-API-KEY;
+                            required for /analyze and /analyze/batch
+    ANALYZE_RATE_LIMIT   — slowapi rate limit string, e.g. "20/minute"
+    CORS_ORIGINS         — comma-separated allowed origins (no wildcard in prod)
 """
 
 from __future__ import annotations
@@ -22,8 +26,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
-from app.api.routes import router
+from app.api.routes import limiter, router
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -91,14 +97,21 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow all origins in development; restrict in production via env
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS. No credentialed requests are used (auth is a header-based API key,
+# not a cookie), so allow_credentials stays off. CORS_ORIGINS should be set
+# to a concrete origin list in production — real access control is the
+# X-API-KEY check in app/auth.py, not this policy (CORS only constrains
+# browser-initiated requests, not curl/scripts).
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
     allow_origin_regex=r"chrome-extension://.*",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "X-API-KEY"],
 )
 
 # Register routes under /api/v1 prefix

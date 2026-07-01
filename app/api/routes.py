@@ -13,10 +13,12 @@ from __future__ import annotations
 import logging
 import os
 
-from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.application.use_cases.analyze_reviews import AnalyzeReviewsUseCase
+from app.auth import verify_api_key
 from app.infrastructure.analyzers.review_analyzer_adapter import ReviewAnalyzerAdapter
 from app.schemas.models import (
     AnalyzeRequest,
@@ -29,8 +31,10 @@ from app.schemas.models import (
 logger = logging.getLogger(__name__)
 
 _API_VERSION = os.getenv("API_VERSION", "0.1.0")
+_ANALYZE_RATE_LIMIT = os.getenv("ANALYZE_RATE_LIMIT", "20/minute")
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 _analyze_use_case = AnalyzeReviewsUseCase(ReviewAnalyzerAdapter())
 
 
@@ -51,21 +55,20 @@ _analyze_use_case = AnalyzeReviewsUseCase(ReviewAnalyzerAdapter())
     ),
     tags=["Analysis"],
 )
-async def analyze_reviews(request: AnalyzeRequest) -> AnalyzeResponse:
+@limiter.limit(_ANALYZE_RATE_LIMIT)
+async def analyze_reviews(
+    request: Request,
+    payload: AnalyzeRequest,
+    api_key: str = Depends(verify_api_key),
+) -> AnalyzeResponse:
     """
     Run the full ReviewLens analysis pipeline on a single product's reviews.
 
     - **reviews**: Non-empty list of review strings (max 500 per request).
     - **product_name**: Optional label used in generated summaries.
     """
-    if len(request.reviews) > 500:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Maximum 500 reviews per request. Use /analyze/batch for larger sets.",
-        )
-
     try:
-        result = _analyze_use_case.execute(request)
+        result = _analyze_use_case.execute(payload)
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -98,20 +101,19 @@ async def analyze_reviews(request: AnalyzeRequest) -> AnalyzeResponse:
     ),
     tags=["Analysis"],
 )
-async def analyze_batch(request: BatchAnalyzeRequest) -> BatchAnalyzeResponse:
+@limiter.limit(_ANALYZE_RATE_LIMIT)
+async def analyze_batch(
+    request: Request,
+    payload: BatchAnalyzeRequest,
+    api_key: str = Depends(verify_api_key),
+) -> BatchAnalyzeResponse:
     """
     Analyse multiple products in a single request.
 
     - **products**: List of AnalyzeRequest objects (max 20 products).
     """
-    if len(request.products) > 20:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Maximum 20 products per batch request.",
-        )
-
     try:
-        result = _analyze_use_case.execute_batch(request)
+        result = _analyze_use_case.execute_batch(payload)
     except Exception as exc:
         logger.exception("Unexpected error during batch analysis: %s", exc)
         raise HTTPException(
