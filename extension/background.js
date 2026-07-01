@@ -11,7 +11,7 @@ const API_BASE = "http://127.0.0.1:8001";
 // "read the source", stopping casual scraping and other installed
 // extensions from riding on this backend for free. Real per-user
 // authentication/billing is a separate, not-yet-built system.
-const EXTENSION_API_KEY = "REPLACE_WITH_BACKEND_EXTENSION_API_KEY";
+const EXTENSION_API_KEY = "T4SnuIHIbTgs3EUteyax06HciNGAaiQKu3cX2w1Kit4";
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
