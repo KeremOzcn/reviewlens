@@ -20,7 +20,6 @@ numpy==1.26.4
 
 # Text preprocessing
 beautifulsoup4==4.12.3
-contractions==0.1.73
 nltk==3.8.1
 
 # Demo UI

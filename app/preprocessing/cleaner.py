@@ -9,7 +9,6 @@ import re
 import unicodedata
 from typing import List
 
-import contractions
 import nltk
 from bs4 import BeautifulSoup
 
@@ -63,11 +62,6 @@ def strip_html(text: str) -> str:
     return cleaned
 
 
-def expand_contractions(text: str) -> str:
-    """Expand English contractions (e.g. don't → do not)."""
-    return contractions.fix(text)
-
-
 def normalize_unicode(text: str) -> str:
     """Normalize unicode characters (preserves Turkish characters)."""
     return unicodedata.normalize("NFKC", text)
@@ -116,14 +110,13 @@ def clean_review(
 
     Steps:
         1. Strip HTML tags
-        2. Expand contractions
-        3. Normalize unicode
-        4. Remove URLs / emails (optional)
-        5. Normalize punctuation
-        6. Lowercase
-        7. Remove special characters
-        8. Remove stopwords (optional)
-        9. Normalize whitespace
+        2. Normalize unicode
+        3. Remove URLs / emails (optional)
+        4. Normalize punctuation
+        5. Lowercase
+        6. Remove special characters
+        7. Remove stopwords (optional)
+        8. Normalize whitespace
 
     Args:
         text: Raw review string.
@@ -138,7 +131,6 @@ def clean_review(
         return ""
 
     text = strip_html(text)
-    text = expand_contractions(text)
     text = normalize_unicode(text)
 
     if remove_urls:

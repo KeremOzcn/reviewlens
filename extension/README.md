@@ -37,10 +37,12 @@ Extension yüklendikten sonra adres çubuğu yanında ReviewLens ikonu görünü
 
 | Platform | Yorum Seçici | Yıldız Seçici | Ürün Adı Seçici |
 |---|---|---|---|
-| Trendyol | `.ry-comment-card` | `[class*='star-w']` | `h1.pr-new-br > span` |
-| Hepsiburada | `[data-component-type='ReviewItem']` | `[class*='star']` | `h1[itemprop='name']` |
+| Trendyol | `.review-list .review` (ayrı `/yorumlar` alt sayfasından, gizli iframe ile) | `.star-rating-star-container` (CSS genişlik oranından hesaplanır) | `h1` |
+| Hepsiburada | `.paginationContentHolder > div` (lazy-load, `prepare()` ile sayfa içine kaydırılır) | `[class*='RatingPointer-module']` | `h1:not([class*='ProductRate'])` |
 
-Her platformdan en fazla 100 yorum toplanır. SPA sayfalar için MutationObserver ile 8 saniye beklenir.
+Her platformdan en fazla 100 yorum toplanır. SPA sayfalar için MutationObserver ile 12 saniye beklenir.
+
+**Bakım notu:** Bu seçiciler her iki sitenin de React/CSS-modules tabanlı SPA yeniden tasarımlarına göre 2026-07-01'de güncellendi (eski seçiciler — `.ry-comment-card`, `[data-component-type='ReviewItem']` — tamamen değişmişti). CSS-modules class'ları (`hermes-*-module-*` gibi) build başına hash içerir; site güncellemelerinde tekrar bozulabilir. Sidepanel'deki **DOM Teşhis** butonu (`PROBE_DOM` mesajı) canlı sayfadaki gerçek seçicileri raporlar, ilk teşhis adımı olarak kullanılabilir.
 
 ## Dosya Yapısı
 

@@ -12,37 +12,37 @@
       return this.config.hosts.some((host) => url.hostname.includes(host));
     }
 
-    trySelect(selectors) {
+    trySelect(selectors, doc = document) {
       for (const selector of selectors) {
         try {
-          const el = document.querySelector(selector);
+          const el = doc.querySelector(selector);
           if (el) return el;
         } catch {}
       }
       return null;
     }
 
-    trySelectAll(selectors) {
+    trySelectAll(selectors, doc = document) {
       let best = [];
       for (const selector of selectors) {
         try {
-          const els = Array.from(document.querySelectorAll(selector));
+          const els = Array.from(doc.querySelectorAll(selector));
           if (els.length > best.length) best = els;
         } catch {}
       }
       return best;
     }
 
-    async waitForAny(selectors, timeout = 8000) {
+    async waitForAny(selectors, timeout = 8000, doc = document) {
       return new Promise((resolve, reject) => {
-        const found = this.trySelect(selectors);
+        const found = this.trySelect(selectors, doc);
         if (found) {
           resolve(found);
           return;
         }
 
         const observer = new MutationObserver(() => {
-          const el = this.trySelect(selectors);
+          const el = this.trySelect(selectors, doc);
           if (el) {
             clearTimeout(timer);
             observer.disconnect();
@@ -55,8 +55,19 @@
           reject(new Error("timeout"));
         }, timeout);
 
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(doc.body, { childList: true, subtree: true });
       });
+    }
+
+    // Hook for adapters whose review widgets only start loading once
+    // scrolled into view (lazy IntersectionObserver-based rendering).
+    async prepare() {}
+
+    // Hook for adapters whose reviews don't live in the current page's DOM
+    // at all (e.g. moved to a separate sub-page). Default: scrape the live
+    // page. `warnings` may be pushed to if a fallback had to be used.
+    async resolveReviewsDocument(_warnings) {
+      return document;
     }
 
     parseStarValue(element) {
@@ -79,8 +90,8 @@
       return null;
     }
 
-    extractReviews() {
-      const containers = this.trySelectAll(this.config.reviewContainer).slice(0, MAX_ITEMS);
+    extractReviews(doc = document) {
+      const containers = this.trySelectAll(this.config.reviewContainer, doc).slice(0, MAX_ITEMS);
       return containers
         .map((el) => {
           for (const txtSel of this.config.reviewText) {
@@ -94,8 +105,8 @@
         .filter((t) => t.length > 5);
     }
 
-    extractStars() {
-      const containers = this.trySelectAll(this.config.reviewContainer).slice(0, MAX_ITEMS);
+    extractStars(doc = document) {
+      const containers = this.trySelectAll(this.config.reviewContainer, doc).slice(0, MAX_ITEMS);
       const stars = [];
       for (const container of containers) {
         let value = null;
@@ -112,41 +123,110 @@
       return stars;
     }
 
-    extractProductMeta() {
-      const productNameEl = this.trySelect(this.config.productName);
+    extractProductMeta(doc = document) {
+      const productNameEl = this.trySelect(this.config.productName, doc);
       return {
-        name: productNameEl ? productNameEl.innerText.trim() : document.title,
+        name: productNameEl ? productNameEl.innerText.trim() : doc.title,
       };
     }
   }
 
-  class TrendyolAdapter extends BaseSiteAdapter {}
-  class HepsiburadaAdapter extends BaseSiteAdapter {}
+  // ---------------------------------------------------------------------
+  // Trendyol: reviews live on a separate `<product-url>/yorumlar` page
+  // (client-side rendered — a plain fetch() of that URL returns an empty
+  // shell, so it's loaded in a hidden same-origin iframe to get a real
+  // rendered DOM without navigating the user's visible tab). Star ratings
+  // are encoded as a CSS `padding-inline-end` cutoff on a fixed-width bar
+  // rather than an attribute, so parseStarValue is overridden.
+  // ---------------------------------------------------------------------
+  class TrendyolAdapter extends BaseSiteAdapter {
+    async resolveReviewsDocument(warnings) {
+      if (this.trySelectAll(this.config.reviewContainer, document).length > 0) {
+        return document;
+      }
+      if (/\/yorumlar(\/|$|\?)/.test(location.pathname)) {
+        return document;
+      }
+
+      const reviewsUrl = location.pathname.replace(/\/$/, "") + "/yorumlar" + location.search;
+      const iframe = document.createElement("iframe");
+      iframe.style.cssText =
+        "position:fixed;top:-9999px;left:-9999px;width:1200px;height:2000px;border:0;";
+      this._reviewsFrame = iframe;
+
+      try {
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error("iframe timeout")), 9000);
+          iframe.onload = () => {
+            clearTimeout(timer);
+            resolve();
+          };
+          iframe.onerror = () => {
+            clearTimeout(timer);
+            reject(new Error("iframe error"));
+          };
+          iframe.src = reviewsUrl;
+          document.body.appendChild(iframe);
+        });
+        await this.waitForAny(this.config.reviewContainer, 6000, iframe.contentDocument).catch(
+          () => {}
+        );
+        return iframe.contentDocument;
+      } catch {
+        warnings.push("Yorumlar sayfası ayrıca yüklenemedi, ana ürün sayfası kullanıldı.");
+        this.cleanup();
+        return document;
+      }
+    }
+
+    cleanup() {
+      if (this._reviewsFrame && this._reviewsFrame.parentNode) {
+        this._reviewsFrame.parentNode.removeChild(this._reviewsFrame);
+      }
+      this._reviewsFrame = null;
+    }
+
+    parseStarValue(element) {
+      const fullStar = element?.querySelector?.(".star-rating-full-star");
+      if (fullStar) {
+        const view = element.ownerDocument?.defaultView;
+        if (view) {
+          const containerWidth = parseFloat(view.getComputedStyle(element).width);
+          const padding = parseFloat(view.getComputedStyle(fullStar).paddingInlineEnd);
+          if (containerWidth > 0 && !Number.isNaN(padding)) {
+            const rating = 5 * (1 - padding / containerWidth);
+            return Math.max(0, Math.min(5, Math.round(rating * 2) / 2));
+          }
+        }
+      }
+      return super.parseStarValue(element);
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Hepsiburada: reviews render inline but lazily (IntersectionObserver-
+  // gated) — scrolling the comments area into view is required to trigger
+  // it, and it can take several seconds even after that.
+  // ---------------------------------------------------------------------
+  class HepsiburadaAdapter extends BaseSiteAdapter {
+    async prepare() {
+      const anchor = document.querySelector(
+        "[class*='Comments-module'], [class*='ReviewList-module']"
+      );
+      if (anchor) {
+        anchor.scrollIntoView({ block: "center" });
+      } else {
+        window.scrollTo(0, document.body.scrollHeight * 0.6);
+      }
+    }
+  }
 
   const ADAPTERS = [
     new TrendyolAdapter({
       hosts: ["trendyol.com"],
-      reviewContainer: [
-        ".ry-comment-card",
-        ".comment-card-container",
-        "[class*='comment-card']",
-        "[class*='review-card']",
-        ".pr-rnf-wrp li",
-        "[data-testid='comment-card']",
-      ],
-      reviewText: [
-        ".comment-text",
-        ".ry-pb p",
-        "[class*='comment-text']",
-        "p.ry-p",
-        ".description",
-      ],
-      starValue: [
-        "[class*='star-w']",
-        "[class*='rating']",
-        "[aria-label*='puan']",
-        "[title*='puan']",
-      ],
+      reviewContainer: [".review-list .review", ".ry-comment-card", ".comment-card-container"],
+      reviewText: [".review-comment", ".comment-text"],
+      starValue: [".star-rating-star-container", "[class*='star-w']"],
       productName: [
         "h1.pr-new-br > span",
         ".pr-new-br span",
@@ -157,27 +237,17 @@
     new HepsiburadaAdapter({
       hosts: ["hepsiburada.com"],
       reviewContainer: [
+        ".paginationContentHolder > div",
         "[data-component-type='ReviewItem']",
         ".customer-review-item",
-        "[class*='review-item']",
-        "[data-testid='review-item']",
       ],
-      reviewText: [
-        ".comment-content",
-        ".review-content",
-        "[class*='comment-content']",
-        ".review-text",
-      ],
-      starValue: [
-        "[class*='star']",
-        "[class*='rating']",
-        "[aria-label*='puan']",
-        "[title*='puan']",
-      ],
+      reviewText: ["[class*='ReviewCard-module-KaU17BbDowCWcTZ9zzxw']"],
+      starValue: ["[class*='RatingPointer-module']", "[class*='star']", "[class*='rating']"],
       productName: [
         "h1[itemprop='name']",
         "[itemprop='name']",
         "h1[class*='product']",
+        "h1:not([class*='ProductRate'])",
         "h1",
       ],
     }),
@@ -188,8 +258,8 @@
     return ADAPTERS.find((adapter) => adapter.canHandle(url)) ?? null;
   }
 
-  function genericReviewFallback() {
-    const candidates = document.querySelectorAll(
+  function genericReviewFallback(doc = document) {
+    const candidates = doc.querySelectorAll(
       '[data-hook="review"], [data-type="review"], [itemtype*="Review"], ' +
         '[class*="yorum"], [id*="yorum"], [class*="comment"][class*="item"], [class*="review"][class*="item"]'
     );
@@ -201,26 +271,28 @@
 
   async function scrapeWithAdapter(adapter) {
     const warnings = [];
-    try {
-      await adapter.waitForAny(adapter.config.reviewContainer, 8000);
-    } catch {
-      warnings.push("Yorum kapsayıcıları zamanında yüklenemedi, genel fallback kullanıldı.");
-    }
 
-    let reviews = adapter.extractReviews();
+    await adapter.prepare();
+    await adapter.waitForAny(adapter.config.reviewContainer, 12000).catch(() => {});
+
+    const reviewsDoc = await adapter.resolveReviewsDocument(warnings);
+
+    let reviews = adapter.extractReviews(reviewsDoc);
     if (reviews.length === 0) {
-      reviews = genericReviewFallback();
+      reviews = genericReviewFallback(reviewsDoc);
       if (reviews.length > 0) {
         warnings.push("Siteye özel seçicilerle yorum bulunamadı, fallback seçiciler kullanıldı.");
       }
     }
 
-    const stars = adapter.extractStars();
+    const stars = adapter.extractStars(reviewsDoc);
     if (reviews.length > 0 && stars.length === 0) {
       warnings.push("Yıldız puanları çıkarılamadı; analiz sadece yorum metnine dayalı üretildi.");
     }
 
     const productMeta = adapter.extractProductMeta();
+    adapter.cleanup?.();
+
     return {
       platform: adapter.config.hosts[0],
       reviews,
