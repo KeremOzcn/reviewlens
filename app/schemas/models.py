@@ -34,6 +34,12 @@ class TrendDirection(str, Enum):
     UNKNOWN = "unknown"
 
 
+class SummaryLabel(str, Enum):
+    GOOD = "good"
+    MEDIUM = "medium"
+    BAD = "bad"
+
+
 # ---------------------------------------------------------------------------
 # Request schemas
 # ---------------------------------------------------------------------------
@@ -52,6 +58,14 @@ class AnalyzeRequest(BaseModel):
         default=None,
         max_length=200,
         description="Optional product name for contextual output.",
+    )
+    stars: List[float] = Field(
+        default_factory=list,
+        description="Optional star ratings scraped from source page.",
+    )
+    scrape_warnings: List[str] = Field(
+        default_factory=list,
+        description="Non-fatal scraping warnings propagated to partial response metadata.",
     )
 
     @field_validator("reviews")
@@ -103,6 +117,13 @@ class TopIssue(BaseModel):
     )
 
 
+class TopIssueSummary(BaseModel):
+    """Compact buyer-facing recurring issue summary."""
+
+    title: str = Field(..., description="Issue title")
+    ratio: int = Field(..., ge=0, le=100, description="Share of reviews mentioning the issue")
+
+
 class SellerReport(BaseModel):
     """Structured intelligence report intended for product sellers."""
 
@@ -145,8 +166,12 @@ class AnalyzeResponse(BaseModel):
     overall_sentiment: float = Field(
         ..., ge=-1.0, le=1.0, description="Aggregate sentiment score."
     )
+    score: int = Field(..., ge=0, le=100, description="Normalized score in [0, 100].")
+    label: SummaryLabel
+    summary: str = Field(..., description="Short user-facing summary.")
     aspect_scores: AspectScores
     top_issues: List[TopIssue] = Field(default_factory=list)
+    top_issue_summaries: List[TopIssueSummary] = Field(default_factory=list)
     buyer_summary: str = Field(
         ..., description="Human-readable summary for prospective buyers."
     )
@@ -162,8 +187,21 @@ class AnalyzeResponse(BaseModel):
         description="Potential deal-breakers identified in reviews.",
     )
     review_count: int = Field(..., ge=0)
+    processed_review_count: int = Field(..., ge=0)
     confidence: ConfidenceLevel
     sentiment_breakdown: Optional[SentimentBreakdown] = None
+    partial: bool = Field(default=False)
+    partial_reason: Optional[str] = None
+
+    @field_validator("partial_reason")
+    @classmethod
+    def validate_partial_reason(cls, v: Optional[str], info) -> Optional[str]:
+        is_partial = bool(info.data.get("partial"))
+        if is_partial and not v:
+            raise ValueError("partial_reason is required when partial is true.")
+        if not is_partial:
+            return None
+        return v
 
 
 class BatchAnalyzeResponse(BaseModel):

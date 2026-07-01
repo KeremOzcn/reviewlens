@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReviewLens Popup</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <h1>ReviewLens</h1>
+      <p class="hint">Ürünü hızlıca analiz et, detayları sidepanelde aç.</p>
+
+      <button id="analyzeBtn" class="primary">Hızlı Analiz</button>
+
+      <section id="result" class="result hidden">
+        <p><strong>Skor:</strong> <span id="score">-</span>/100</p>
+        <p><strong>Etiket:</strong> <span id="label">-</span></p>
+        <p><strong>Özet:</strong> <span id="summary">-</span></p>
+      </section>
+
+      <button id="openPanelBtn" class="secondary">Sidepanel Detayı Aç</button>
+      <p id="error" class="error hidden"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -21,9 +21,9 @@ Seller report includes:
 
 from __future__ import annotations
 
-import math
 from typing import Dict, List, Optional
 
+from app.domain.analysis_rules import confidence_level, sentiment_label_tr
 from app.models.topic_extractor import Cluster, ClusteringResult
 from app.schemas.models import (
     AspectScores,
@@ -72,22 +72,15 @@ def _seller_action_for(keywords: List[str]) -> str:
 
 def _sentiment_label(score: float) -> str:
     """Convert a [-1, 1] score to a human-readable Turkish label."""
-    if score >= 0.5:
-        return "çok olumlu"
-    if score >= 0.2:
-        return "olumlu"
-    if score >= -0.1:
-        return "karışık"
-    if score >= -0.4:
-        return "olumsuz"
-    return "çok olumsuz"
+    return sentiment_label_tr(score)
 
 
 def _confidence_level(review_count: int) -> ConfidenceLevel:
     """Determine confidence level based on review volume."""
-    if review_count >= 50:
+    level = confidence_level(review_count)
+    if level == "high":
         return ConfidenceLevel.HIGH
-    if review_count >= 15:
+    if level == "medium":
         return ConfidenceLevel.MEDIUM
     return ConfidenceLevel.LOW
 

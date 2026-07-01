@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReviewLens</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-brand">
+        <span class="brand-icon">🔍</span>
+        <span class="brand-name">ReviewLens</span>
+      </div>
+      <div class="health-indicator" id="healthIndicator" title="API durumu">
+        <span class="health-dot" id="healthDot"></span>
+        <span class="health-label" id="healthLabel">Kontrol ediliyor…</span>
+      </div>
+    </header>
+
+    <!-- Idle Screen -->
+    <div class="screen" id="screenIdle">
+      <div class="idle-content">
+        <div class="idle-icon">📊</div>
+        <h2 class="idle-title">Ürün Yorumlarını Analiz Et</h2>
+        <p class="idle-desc">
+          Trendyol veya Hepsiburada'daki bir ürün
+          sayfasına git ve analizi başlat.
+        </p>
+        <button class="btn-primary" id="analyzeBtn">
+          <span class="btn-icon">✨</span>
+          Yorumları Analiz Et
+        </button>
+        <button class="btn-probe" id="probeBtn" title="Sayfadaki yorum elemanlarını teşhis et">
+          🔬 DOM Teşhis
+        </button>
+        <pre class="probe-output hidden" id="probeOutput"></pre>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="screen hidden" id="screenLoading">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p class="loading-msg" id="loadingMsg">Yorumlar toplanıyor…</p>
+      </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div class="screen hidden" id="screenResult">
+      <div class="result-scroll">
+        <!-- Overall Score -->
+        <section class="card score-card">
+          <div class="score-header">
+            <h3 class="score-label">Genel Değerlendirme</h3>
+            <div class="score-badge" id="scoreBadge">
+              <span class="score-value" id="scoreValue">0</span>
+            </div>
+          </div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" id="scoreBarFill"></div>
+          </div>
+          <p class="score-pill" id="scoreLabel">Orta</p>
+          <p class="score-meta" id="scoreMeta"></p>
+          <p class="partial-info hidden" id="partialInfo"></p>
+        </section>
+
+        <!-- Buyer Summary -->
+        <section class="card summary-card">
+          <h3 class="card-title">📝 Alıcı Özeti</h3>
+          <p class="summary-text" id="buyerSummary"></p>
+        </section>
+
+        <section class="card issues-card">
+          <h3 class="card-title">🔁 Tekrarlayan Sorunlar (Top 3)</h3>
+          <ul class="issues-list" id="topIssuesList"></ul>
+        </section>
+
+        <!-- Aspect Scores -->
+        <section class="card aspects-card">
+          <h3 class="card-title">📊 Konu Bazlı Analiz</h3>
+          <div class="aspects-list" id="aspectsList"></div>
+        </section>
+
+        <!-- Pros & Cons -->
+        <section class="card proscons-card">
+          <div class="proscons-grid">
+            <div class="pros-col">
+              <h3 class="card-title pros-title">👍 Artılar</h3>
+              <ul class="proscons-list" id="prosList"></ul>
+            </div>
+            <div class="cons-col">
+              <h3 class="card-title cons-title">👎 Eksiler</h3>
+              <ul class="proscons-list" id="consList"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Red Flags -->
+        <section class="card red-flags-card" id="redFlagsCard">
+          <h3 class="card-title">🚩 Dikkat Edilecekler</h3>
+          <ul class="red-flags-list" id="redFlagsList"></ul>
+        </section>
+
+        <button class="btn-secondary" id="analyzeAgainBtn">
+          Yeniden Analiz Et
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Screen -->
+    <div class="screen hidden" id="screenError">
+      <div class="error-content">
+        <div class="error-icon">⚠️</div>
+        <p class="error-msg" id="errorMsg">Bir hata oluştu.</p>
+        <button class="btn-primary" id="retryBtn">
+          <span class="btn-icon">🔄</span>
+          Tekrar Dene
+        </button>
+      </div>
+    </div>
+
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

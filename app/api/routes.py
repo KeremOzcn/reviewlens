@@ -16,6 +16,8 @@ import os
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 
+from app.application.use_cases.analyze_reviews import AnalyzeReviewsUseCase
+from app.infrastructure.analyzers.review_analyzer_adapter import ReviewAnalyzerAdapter
 from app.schemas.models import (
     AnalyzeRequest,
     AnalyzeResponse,
@@ -23,13 +25,13 @@ from app.schemas.models import (
     BatchAnalyzeResponse,
     HealthResponse,
 )
-from app.services import analyzer as analyzer_service
 
 logger = logging.getLogger(__name__)
 
 _API_VERSION = os.getenv("API_VERSION", "0.1.0")
 
 router = APIRouter()
+_analyze_use_case = AnalyzeReviewsUseCase(ReviewAnalyzerAdapter())
 
 
 # ---------------------------------------------------------------------------
@@ -63,7 +65,7 @@ async def analyze_reviews(request: AnalyzeRequest) -> AnalyzeResponse:
         )
 
     try:
-        result = analyzer_service.analyze(request)
+        result = _analyze_use_case.execute(request)
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -109,7 +111,7 @@ async def analyze_batch(request: BatchAnalyzeRequest) -> BatchAnalyzeResponse:
         )
 
     try:
-        result = analyzer_service.analyze_batch(request)
+        result = _analyze_use_case.execute_batch(request)
     except Exception as exc:
         logger.exception("Unexpected error during batch analysis: %s", exc)
         raise HTTPException(
@@ -144,5 +146,5 @@ async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
         version=_API_VERSION,
-        models_loaded=analyzer_service.models_loaded_status(),
+        models_loaded=_analyze_use_case.model_status(),
     )
