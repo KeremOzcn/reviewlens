@@ -39,3 +39,30 @@ jobs:
           node --check extension/content.js
           node --check extension/sidepanel.js
           node --check extension/popup.js
+
+  e2e-gate:
+    runs-on: ubuntu-latest
+    needs: quality-gate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install e2e dependencies
+        working-directory: extension/e2e
+        run: npm install
+
+      - name: Install Playwright Chromium
+        working-directory: extension/e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run extension e2e tests
+        working-directory: extension/e2e
+        # Extension loading requires a real (non-headless-shell) Chromium,
+        # which needs a display — xvfb-run provides a virtual one on CI.
+        run: xvfb-run --auto-servernum npx playwright test

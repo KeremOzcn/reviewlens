@@ -40,3 +40,9 @@ Thumbs.db
 
 # Build scripts
 generate_pdf.py
+
+# Node / Playwright (extension e2e tests)
+node_modules/
+extension/e2e/test-results/
+extension/e2e/playwright-report/
+extension/e2e/.cache/

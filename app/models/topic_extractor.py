@@ -18,9 +18,6 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from sklearn.cluster import HDBSCAN
-from sentence_transformers import SentenceTransformer
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -100,6 +97,8 @@ class TopicExtractor:
         top_keywords: int = _TOP_KEYWORDS_PER_CLUSTER,
         batch_size: int = 64,
     ) -> None:
+        from sentence_transformers import SentenceTransformer
+
         self.embedding_model = SentenceTransformer(embedding_model_name)
         self.min_cluster_size = min_cluster_size
         self.min_samples = min_samples
@@ -161,6 +160,8 @@ class TopicExtractor:
 
         Returns an array of integer cluster labels where -1 denotes outliers.
         """
+        from sklearn.cluster import HDBSCAN
+
         n = len(embeddings)
         # Adapt min_cluster_size to input size; never larger than n//2
         min_cluster_size = max(2, min(self.min_cluster_size, n // 2))
@@ -220,6 +221,8 @@ class TopicExtractor:
         Returns:
             List of keyword strings, sorted by TF-IDF score descending.
         """
+        from sklearn.feature_extraction.text import TfidfVectorizer
+
         try:
             vectorizer = TfidfVectorizer(
                 max_features=_TFIDF_MAX_FEATURES,
