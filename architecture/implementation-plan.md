@@ -15,9 +15,9 @@
 - Sidepanel: detay (score, label, top3 issues, partial reason)
 - Kısmi sonuçların tutarlı gösterimi
 
-## Faz 4 — Kalite ve hız
+## Faz 4 — Kalite ve hız (Tamamlandı)
 - Unit test iskeleti + CI gate
-- Integration testler (adapter + response contract)
-- E2E testler (sayfa -> extension -> sonuç)
-- 3 saniye hedefi için performans iyileştirmeleri
+- Integration testler (adapter + response contract) — `tests/test_analysis_pipeline_integration.py`
+- E2E testler (sayfa -> extension -> sonuç) — `extension/e2e/`, Playwright ile gerçek unpacked extension yüklenerek
+- 3 saniye hedefi için performans doğrulaması — bkz. [ADR-0006](adr/0006-performance-verification-results.md); hedef büyük marjla karşılanıyor, ek optimizasyona gerek yok
 
